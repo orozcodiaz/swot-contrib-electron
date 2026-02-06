@@ -1,0 +1,56 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Build output
+dist/
+build/
+out/
+*.asar
+
+# Electron specific
+electron-build/
+electron-packager/
+*.dmg
+*.exe
+*.app
+*.deb
+*.rpm
+*.zip
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Miscellaneous
+coverage/
+*.tgz
+*.gz
+*.zip
+*.tar
+
+# TypeScript
+*.tsbuildinfo
+
+# Build system files
+*.iml

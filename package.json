@@ -1,0 +1,21 @@
+{
+  "name": "swot-contrib-electron",
+  "version": "1.0.0",
+  "main": "main.mjs",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-packager ."
+  },
+  "author": "Fred Orozco Diaz",
+  "license": "MIT",
+  "description": "Util to easily contribute to JetBrains SWOT",
+  "devDependencies": {
+    "@electron/packager": "^18.4.4",
+    "electron": "^36.0.0"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.1.1",
+    "electron-store": "^10.0.1",
+    "parse-git-config": "^3.0.0"
+  }
+}

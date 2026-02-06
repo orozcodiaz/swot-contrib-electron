@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+    <title>SWOT Contributor</title>
+    <link href="../css/swot.css" rel="stylesheet">
+    <link href="../css/modal.css" rel="stylesheet">
+</head>
+<body>
+<!-- Spinner Loader -->
+<div class="spinner-overlay" id="spinner" style="display: none;">
+    <div class="spinner"></div>
+</div>
+
+<!-- Header -->
+<div class="header">
+    <div class="header-title">SWOT CONTRIBUTOR</div>
+    <div class="header-buttons">
+        <button class="minimize-btn" id="minimize-btn">−</button>
+        <button class="close-btn" id="close-btn">X</button>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="content">
+    <!-- Info Rows -->
+    <div class="info-row">
+        <div class="info-left">
+            <div class="info-label">SWOT FOLDER:</div>
+            <div class="info-value" id="swot-path"><button class="action-button restart-proc-btn" id="select-swot-folder">select</button></div>
+        </div>
+        <div class="info-right">
+            <div class="counter-label">UNMENTIONED:</div>
+            <div class="counter-value" id="total-unmentioned">N/A</div>
+        </div>
+    </div>
+
+    <div class="info-row">
+        <div class="info-left">
+            <div class="info-label">SCHOOLS JSON:</div>
+            <div class="info-value" id="schools-path"><button class="action-button restart-proc-btn" id="select-json-file" disabled>select</button></div>
+        </div>
+        <div class="info-right">
+            <div class="counter-label">CONTRIBUTIONS:</div>
+            <div class="counter-value" id="total-contributions">0</div>
+        </div>
+    </div>
+
+    <!-- Values Table -->
+    <table class="values-table" id="swot-container">
+
+    </table>
+
+    <!-- Log Area and Buttons -->
+    <div class="log-section">
+        <textarea id="log-container" readonly></textarea>
+        <div class="buttons-column">
+            <button class="action-button" id="manual-add-button">ADD SCHOOL</button>
+            <button class="action-button" id="refresh-random" disabled>REFRESH</button>
+            <button class="action-button" id="settings-button">SETTINGS</button>
+            <button class="action-button" id="about-button">ABOUT</button>
+            <button class="action-button" id="exit-button">EXIT</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="modal-overlay" style="display: none;"></div>
+
+<!-- Modal Container -->
+<div class="modal-container" id="pull-request-data-container" style="display: none;">
+    <span class="close-modal" id="close-modal">&times;</span>
+    <h4>Create Pull Request</h4>
+
+    <input type="hidden" id="prSchoolName">
+    <input type="hidden" id="prSchoolDomain">
+    <input type="hidden" id="prSchoolPath">
+
+    <div class="form-group">
+        <label for="prTitle">PR Title</label>
+        <input type="text" id="prTitle" placeholder="Enter PR title">
+    </div>
+
+    <div class="form-group">
+        <label for="prBody">PR Body</label>
+        <textarea id="prBody" rows="6" placeholder="Describe the changes..."></textarea>
+    </div>
+
+    <div class="button-group">
+        <button class="action-button cancel" id="cancel-pull-request">CLOSE</button>
+        <button class="action-button" id="create-pull-request-button">CREATE</button>
+    </div>
+</div>
+
+<!-- About Container -->
+<div class="modal-container" id="about-container" style="display: none;">
+    <span class="close-modal" id="close-about-modal">&times;</span>
+    <h4>About</h4>
+
+    <p>Information goes here</p>
+</div>
+
+<!-- Settings Container -->
+<div class="modal-container" id="settings-container" style="display: none;">
+    <span class="close-modal close-settings-modal">&times;</span>
+    <h4>Settings</h4>
+
+    <div class="form-group">
+        <label for="gitHubToken">GitHub Token</label>
+        <input type="text" id="gitHubToken" placeholder="ghp_***********">
+    </div>
+
+    <div class="form-group">
+        <label for="baseRepository">Base Repository</label>
+        <input type="text" id="baseRepository" placeholder="user/repo (e.g.: JetBrains/swot)">
+    </div>
+
+    <div class="form-group">
+        <label for="headOwner">Head Owner</label>
+        <input type="text" id="headOwner" placeholder="username (e.g.: orozcodiaz)">
+    </div>
+
+    <div class="form-group">
+        <label for="timezone">Timezone</label>
+        <input type="text" id="timezone" placeholder="current timezone (e.g.: America/Chicago)">
+    </div>
+
+    <div class="button-group">
+        <button class="action-button cancel close-settings-modal">CANCEL</button>
+        <button class="action-button" id="save-settings">SAVE</button>
+    </div>
+</div>
+
+<script src="../js/swot.js"></script>
+<script src="../js/about.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,95 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.05); /* faint white overlay */
+    backdrop-filter: blur(2px);
+    z-index: 1000;
+}
+
+.modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1e1e1e;
+    color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    z-index: 1001;
+    width: 800px;
+    max-width: 90vw;
+}
+
+.modal-container h4 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+    background-color: #2a2a2a;
+    color: white;
+    border: 1px solid #444;
+    padding: 8px 10px;
+    border-radius: 6px;
+    resize: none;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-action-button {
+    background-color: #3f51b5;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.modal-action-button:hover {
+    background-color: #5c6bc0;
+}
+
+.modal-action-button.cancel {
+    background-color: #555;
+}
+
+.modal-action-button.cancel:hover {
+    background-color: #777;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close-modal:hover {
+    color: white;
+}

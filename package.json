@@ -11,7 +11,7 @@
   "description": "Util to easily contribute to JetBrains SWOT",
   "devDependencies": {
     "@electron/packager": "^18.4.4",
-    "electron": "^36.0.0"
+    "electron": "38.0.0-beta.6"
   },
   "dependencies": {
     "@octokit/rest": "^21.1.1",

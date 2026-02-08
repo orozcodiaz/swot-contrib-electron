@@ -13,4 +13,5 @@ contextBridge.exposeInMainWorld('api', {
     getTimezone: () => ipcRenderer.invoke('get-timezone'),
     setTimezone: (timezone) => ipcRenderer.invoke('set-timezone', timezone),
     saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings)
+    openExternal: (url) => ipcRenderer.invoke('open-external', url),
 });

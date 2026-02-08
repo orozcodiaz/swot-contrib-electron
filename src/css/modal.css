@@ -93,3 +93,51 @@
 .close-modal:hover {
     color: white;
 }
+
+/* About modal */
+.about-content {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.about-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 16px;
+}
+
+.about-app-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #dc3545;
+}
+
+.about-meta {
+    text-align: center;
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+.about-meta p {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.about-meta p:last-child {
+    margin-bottom: 0;
+}
+
+.about-link a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.about-link a:hover {
+    text-decoration: underline;
+}
+
+.about-link a {
+    -webkit-user-select: text;
+    user-select: text;
+}

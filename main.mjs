@@ -1,4 +1,4 @@
-import {dialog, ipcMain} from 'electron';
+import {dialog, ipcMain, shell} from 'electron';
 import parse from 'parse-git-config';
 import {initializeApplication, InitializeIpcHandlers, InvokeExit, MinimizeWindow} from './src/system/app.mjs';
 import {getUnmentionedSchoolTemplate} from './src/system/template-engine.mjs';
@@ -120,6 +120,14 @@ ipcMain.handle('pull-settings',  (event) => {
     return SwotContributorStorage.get('settings');
 });
 
+ipcMain.handle('check-github-token', async (event, token) => {
+    const response = await fetch('https://api.github.com/user', {
+        headers: { 'Authorization': `token ${token}` }
+    });
+    const body = await response.text();
+    return { status: response.status, body };
+});
+
 ipcMain.handle('get-timezone',  () => {
     return SwotContributorStorage.get('settings.timezone') ?? null;
 });
@@ -130,6 +138,10 @@ ipcMain.handle('set-timezone',  (event, timezone) => {
 
 ipcMain.handle('get-contributions-amount',  () => {
     return SwotContributorStorage.get('history').length ?? 0;
+});
+
+ipcMain.handle('open-external', async (event, url) => {
+    await shell.openExternal(url);
 });
 
 // Exit Button

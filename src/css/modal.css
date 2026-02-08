@@ -95,6 +95,10 @@
 }
 
 /* About modal */
+#about-container {
+    width: fit-content;
+}
+
 .about-content {
     text-align: center;
     padding: 20px 0;

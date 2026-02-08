@@ -111,6 +111,14 @@
     </div>
 </div>
 
+<!-- Token Response Container -->
+<div class="modal-container" id="token-response-container" style="display: none;">
+    <span class="close-modal close-token-response-modal">&times;</span>
+    <h4>GitHub Token Response</h4>
+    <pre id="token-response-json" class="token-response-json"></pre>
+    <div class="button-group">
+        <button class="action-button close-token-response-modal">CLOSE</button>
+    </div>
 </div>
 
 <!-- Settings Container -->
@@ -120,7 +128,13 @@
 
     <div class="form-group">
         <label for="gitHubToken">GitHub Token</label>
-        <input type="text" id="gitHubToken" placeholder="ghp_***********">
+        <div class="token-input-group">
+            <input type="text" id="gitHubToken" placeholder="ghp_***********">
+            <button type="button" class="check-token-btn" id="check-token-btn" title="Check token">
+                <span class="check-token-icon">check</span>
+                <span class="check-token-spinner spinner-small"></span>
+            </button>
+        </div>
     </div>
 
     <div class="form-group">

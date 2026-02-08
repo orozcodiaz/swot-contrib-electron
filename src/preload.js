@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('api', {
     getContributionsAmount: () => ipcRenderer.invoke('get-contributions-amount'),
     getTimezone: () => ipcRenderer.invoke('get-timezone'),
     setTimezone: (timezone) => ipcRenderer.invoke('set-timezone', timezone),
-    saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings)
     openExternal: (url) => ipcRenderer.invoke('open-external', url),
+    saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
+    checkGitHubToken: (token) => ipcRenderer.invoke('check-github-token', token)
 });

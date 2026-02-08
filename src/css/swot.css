@@ -361,6 +361,66 @@ body {
     100% { transform: rotate(360deg); }
 }
 
+.token-input-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.token-input-group input {
+    flex: 1;
+}
+
+.check-token-btn {
+    flex-shrink: 0;
+    width: 60px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.check-token-btn:hover {
+    background-color: #333;
+    border-color: #555;
+}
+
+.check-token-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.check-token-btn .check-token-icon {
+    display: block;
+}
+
+.check-token-btn .check-token-spinner {
+    display: none;
+}
+
+.check-token-btn.loading .check-token-icon {
+    display: none;
+}
+
+.check-token-btn.loading .check-token-spinner {
+    display: block;
+}
+
+.spinner-small {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #444;
+    border-top-color: #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
 .copy-school-name-btn {
     border: 1px solid #dc3545;
     background-color: #dc3545;

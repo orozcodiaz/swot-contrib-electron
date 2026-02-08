@@ -222,13 +222,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Event listeners
-    closePrModal.addEventListener('click', function (event) {
+    closePrModal.addEventListener('click', function () {
         if (confirm('Are you sure you want to cancel?')) {
             hidePrModal();
         }
     });
 
-    cancelPrBtn.addEventListener('click', function (event) {
+    cancelPrBtn.addEventListener('click', function () {
         if (confirm('Are you sure you want to cancel?')) {
             hidePrModal();
         }
@@ -339,6 +339,53 @@ document.addEventListener('DOMContentLoaded', async () => {
             timezone.value = settings.timezone ?? '';
         });
     }
+
+    // Check token button
+    const checkTokenBtn = document.getElementById('check-token-btn');
+    const tokenResponseContainer = document.getElementById('token-response-container');
+    const tokenResponseJson = document.getElementById('token-response-json');
+    const closeTokenResponseBtn = document.querySelectorAll('.close-token-response-modal');
+
+    function closeTokenResponseModal() {
+        tokenResponseContainer.style.display = 'none';
+    }
+
+    closeTokenResponseBtn.forEach(btn => {
+        btn.addEventListener('click', closeTokenResponseModal);
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        if (tokenResponseContainer.style.display === 'block') {
+            closeTokenResponseModal();
+        } else if (settingsContainer.style.display === 'block') {
+            closeSettingsModal();
+        }
+    });
+
+    checkTokenBtn.addEventListener('click', async () => {
+        const token = gitHubToken.value?.trim();
+        if (!token) {
+            alert('Enter a GitHub token first');
+            return;
+        }
+        checkTokenBtn.classList.add('loading');
+        checkTokenBtn.disabled = true;
+        await new Promise(r => requestAnimationFrame(r));
+        try {
+            const { status, body } = await api.checkGitHubToken(token);
+            let displayText = body;
+            try {
+                const parsed = JSON.parse(body);
+                displayText = JSON.stringify(parsed, null, 2);
+            } catch (_) {}
+            tokenResponseJson.textContent = `Status: ${status}\n\n${displayText}`;
+            tokenResponseContainer.style.display = 'block';
+        } finally {
+            checkTokenBtn.classList.remove('loading');
+            checkTokenBtn.disabled = false;
+        }
+    });
 
     // Save Settings button
     saveSettingBtn.addEventListener('click', () => {

@@ -141,3 +141,21 @@
     -webkit-user-select: text;
     user-select: text;
 }
+
+#token-response-container {
+    z-index: 1002;
+}
+
+.token-response-json {
+    background-color: #1a1a1a;
+    color: #ccc;
+    padding: 15px;
+    border-radius: 6px;
+    overflow: auto;
+    max-height: 400px;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    -webkit-user-select: text;
+    user-select: text;
+}

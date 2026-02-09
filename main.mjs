@@ -139,7 +139,7 @@ ipcMain.handle('set-timezone',  (event, timezone) => {
 });
 
 ipcMain.handle('get-contributions-amount',  () => {
-    return SwotContributorStorage.get('history').length ?? 0;
+    return SwotContributorStorage.get('history')?.length ?? 0;
 });
 
 ipcMain.handle('open-external', async (event, url) => {

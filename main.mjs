@@ -1,5 +1,5 @@
 import {dialog, ipcMain, shell} from 'electron';
-import parse from 'parse-git-config';
+import { parseSync } from "git-config-parser";
 import {initializeApplication, InitializeIpcHandlers, InvokeExit, MinimizeWindow} from './src/system/app.mjs';
 import {getUnmentionedSchoolTemplate} from './src/system/template-engine.mjs';
 import {ExecCommand} from './src/system/git-helper.mjs';
@@ -165,7 +165,7 @@ ipcMain.on('select-swot-folder', async (event) => {
 
         // Verify if this is correct SWOT folder
         event.sender.send('add-to-log', `Checking folder ${swotFolderPath}`);
-        const gitConfigFile = parse.sync({ path: `${swotFolderPath}/.git/config` });
+        const gitConfigFile = parseSync(`${swotFolderPath}/.git/config`);
 
         if (Object.keys(gitConfigFile).length === 0) {
             const errorMessage = `Error. There is not .git folder in ${swotFolderPath}`;
@@ -177,7 +177,7 @@ ipcMain.on('select-swot-folder', async (event) => {
             );
         }
 
-        const remoteOrigin = gitConfigFile['remote "origin"'];
+        const remoteOrigin = gitConfigFile.remote.origin;
         const gitUrl = remoteOrigin && remoteOrigin.url;
         const path = gitUrl.split(':')[1].replace('.git', '');
         const [user, repo] = path.split('/');

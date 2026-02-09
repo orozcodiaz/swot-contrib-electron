@@ -65,7 +65,9 @@ ipcMain.handle('save-settings',  async (event, settings) => {
         gitHubToken: settings.gitHubToken,
         baseRepository: settings.baseRepository,
         headOwner: settings.headOwner,
-        timezone: settings.timezone
+        timezone: settings.timezone,
+        swotFolderPath: settings.swotFolderPath,
+        schoolsJsonPath: settings.schoolsJsonPath
     });
 
     event.sender.send('add-to-log', 'New settings have been saved!');
@@ -116,7 +118,7 @@ ipcMain.handle('check-settings',  async (event) => {
     };
 });
 
-ipcMain.handle('pull-settings',  (event) => {
+ipcMain.handle('pull-settings',  () => {
     return SwotContributorStorage.get('settings');
 });
 
@@ -145,16 +147,24 @@ ipcMain.handle('open-external', async (event, url) => {
 });
 
 // Exit Button
-ipcMain.on('invoke-exit', async (event) => {
+ipcMain.on('invoke-exit', async () => {
     InvokeExit();
 });
 
 // Minimize Button
-ipcMain.on('minimize-window', async (event) => {
+ipcMain.on('minimize-window', async () => {
     MinimizeWindow();
 });
 
 ipcMain.on('select-swot-folder', async (event) => {
+    const settings = SwotContributorStorage.get('settings');
+
+    // Check if SWOT folder is already selected/saved before
+    if (settings?.swotFolderPath?.trim()) {
+        swotFolderPath = settings.swotFolderPath;
+        return await SwotFolderSelector(event);
+    }
+
     const result = await dialog.showOpenDialog({
         title: 'Select JetBrains SWOT folder',
         properties: ['openDirectory']
@@ -162,69 +172,83 @@ ipcMain.on('select-swot-folder', async (event) => {
 
     if (!result.canceled && result.filePaths.length > 0) {
         swotFolderPath = result.filePaths[0];
-
-        // Verify if this is correct SWOT folder
-        event.sender.send('add-to-log', `Checking folder ${swotFolderPath}`);
-        const gitConfigFile = parseSync(`${swotFolderPath}/.git/config`);
-
-        if (Object.keys(gitConfigFile).length === 0) {
-            const errorMessage = `Error. There is not .git folder in ${swotFolderPath}`;
-            event.sender.send('add-to-log', 'SWOT folder verification failed.');
-            event.sender.send('add-to-log', errorMessage);
-            return event.sender.send(
-                'swot-folder-verification-failed',
-                errorMessage
-            );
-        }
-
-        const remoteOrigin = gitConfigFile.remote.origin;
-        const gitUrl = remoteOrigin && remoteOrigin.url;
-        const path = gitUrl.split(':')[1].replace('.git', '');
-        const [user, repo] = path.split('/');
-        const [baseUser, baseRepo] = SwotContributorStorage.get('settings.baseRepository').split('/');
-        const headOwner = SwotContributorStorage.get('settings.headOwner') ?? null;
-
-        if (headOwner !== user) {
-            const errorMessage = `Error. Head owner is "${headOwner}" (settings), but SWOT folder user is "${user}".`;
-            event.sender.send('add-to-log', 'SWOT folder verification failed.');
-            event.sender.send('add-to-log', errorMessage);
-            return event.sender.send(
-                'swot-folder-verification-failed',
-                errorMessage
-            );
-        }
-
-        if (repo !== baseRepo) {
-            const errorMessage = `Error. Base repo is "${baseRepo}" (settings), but repository in SWOT folder is "${repo}".`;
-            event.sender.send('add-to-log', 'SWOT folder verification failed.');
-            event.sender.send('add-to-log', errorMessage);
-            return event.sender.send(
-                'swot-folder-verification-failed',
-                errorMessage
-            );
-        }
-
-        event.sender.send('add-to-log', `Verification passed.`);
-        event.sender.send('add-to-log', 'Pulling data from SWOT GIT...');
-        await ExecCommand(swotFolderPath, 'git fetch origin');
-        await ExecCommand(swotFolderPath, 'git fetch upstream');
-        let gitLogCompare = await ExecCommand(swotFolderPath, 'git log master..upstream/master --oneline');
-
-        // There are discrepancies - time to sync fork
-        if (gitLogCompare != null && gitLogCompare.length > 10) {
-            event.sender.send('add-to-log', 'Local repository is outdated. Merging new changes...');
-            await ExecCommand(swotFolderPath, 'git merge upstream/master');
-            await ExecCommand(swotFolderPath, 'git push origin master');
-            event.sender.send('add-to-log', 'Merge finished!');
-        } else {
-            event.sender.send('add-to-log', 'Local repository is up to date');
-        }
-
-        event.sender.send('swot-folder-selected', swotFolderPath);
+        return await SwotFolderSelector(event);
     } else {
-        event.sender.send('swot-folder-selection-canceled');
+        return event.sender.send('swot-folder-selection-canceled');
     }
 });
+
+async function SwotFolderSelector(event) {
+    // Verify if this is correct SWOT folder
+    event.sender.send('add-to-log', `Checking folder ${swotFolderPath}`);
+    const gitConfigFile = parseSync(`${swotFolderPath}/.git/config`);
+
+    if (Object.keys(gitConfigFile).length === 0) {
+        const errorMessage = `Error. There is not .git folder in ${swotFolderPath}`;
+        event.sender.send('add-to-log', 'SWOT folder verification failed.');
+        event.sender.send('add-to-log', errorMessage);
+        return event.sender.send(
+            'swot-folder-verification-failed',
+            errorMessage
+        );
+    }
+
+    const remoteOrigin = gitConfigFile.remote.origin;
+    const gitUrl = remoteOrigin && remoteOrigin.url;
+    const path = gitUrl.split(':')[1].replace('.git', '');
+    const [user, repo] = path.split('/');
+    const [baseUser, baseRepo] = SwotContributorStorage.get('settings.baseRepository').split('/');
+    const headOwner = SwotContributorStorage.get('settings.headOwner') ?? null;
+
+    if (headOwner !== user) {
+        const errorMessage = `Error. Head owner is "${headOwner}" (settings), but SWOT folder user is "${user}".`;
+        event.sender.send('add-to-log', 'SWOT folder verification failed.');
+        event.sender.send('add-to-log', errorMessage);
+        return event.sender.send(
+            'swot-folder-verification-failed',
+            errorMessage
+        );
+    }
+
+    if (repo !== baseRepo) {
+        const errorMessage = `Error. Base repo is "${baseRepo}" (settings), but repository in SWOT folder is "${repo}".`;
+        event.sender.send('add-to-log', 'SWOT folder verification failed.');
+        event.sender.send('add-to-log', errorMessage);
+        return event.sender.send(
+            'swot-folder-verification-failed',
+            errorMessage
+        );
+    }
+
+    event.sender.send('add-to-log', `Verification passed.`);
+    event.sender.send('add-to-log', 'Pulling data from SWOT GIT...');
+    await ExecCommand(swotFolderPath, 'git fetch origin');
+    await ExecCommand(swotFolderPath, 'git fetch upstream');
+    let gitLogCompare = await ExecCommand(swotFolderPath, 'git log master..upstream/master --oneline');
+
+    // There are discrepancies - time to sync fork
+    if (gitLogCompare != null && gitLogCompare.length > 10) {
+        event.sender.send('add-to-log', 'Local repository is outdated. Merging new changes...');
+        await ExecCommand(swotFolderPath, 'git merge upstream/master');
+        await ExecCommand(swotFolderPath, 'git push origin master');
+        event.sender.send('add-to-log', 'Merge finished!');
+    } else {
+        event.sender.send('add-to-log', 'Local repository is up to date');
+    }
+
+    // Save SWOT folder path into settings - swotFolderPath
+    const settings = SwotContributorStorage.get('settings');
+    SwotContributorStorage.set('settings', {
+        gitHubToken: settings.gitHubToken,
+        baseRepository: settings.baseRepository,
+        headOwner: settings.headOwner,
+        timezone: settings.timezone,
+        swotFolderPath: swotFolderPath,
+        schoolsJsonPath: settings.schoolsJsonPath
+    });
+
+    event.sender.send('swot-folder-selected', swotFolderPath);
+}
 
 ipcMain.on('contribute-school', async (event, data) => {
     // TODO: Fill with event.sender.send('add-to-log', 'LOG MESSAGE (command output)');
@@ -251,6 +275,15 @@ ipcMain.on('contribute-school', async (event, data) => {
 });
 
 ipcMain.on('select-schools-json', async (event) => {
+    const settings = SwotContributorStorage.get('settings');
+
+    // Check if JSON schools path is already selected/saved before
+    if (settings?.schoolsJsonPath?.trim()) {
+        jsonSchoolsFile = settings.schoolsJsonPath;
+        event.sender.send('schools-json-selected', settings.schoolsJsonPath);
+        return PropagateUnmentionedSchools();
+    }
+
     const result = await dialog.showOpenDialog({
         title: 'Select Schools JSON',
         properties: ['openFile'],
@@ -261,6 +294,17 @@ ipcMain.on('select-schools-json', async (event) => {
 
     if (!result.canceled && result.filePaths.length > 0) {
         jsonSchoolsFile = result.filePaths[0];
+
+        // Save schools JSON path into settings - jsonSchoolsFile
+        SwotContributorStorage.set('settings', {
+            gitHubToken: settings.gitHubToken,
+            baseRepository: settings.baseRepository,
+            headOwner: settings.headOwner,
+            timezone: settings.timezone,
+            swotFolderPath: settings.swotFolderPath,
+            schoolsJsonPath: jsonSchoolsFile
+        });
+
         event.sender.send('schools-json-selected', jsonSchoolsFile);
 
         PropagateUnmentionedSchools();

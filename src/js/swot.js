@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const baseRepository = document.getElementById('baseRepository');
     const headOwner = document.getElementById('headOwner');
     const timezone = document.getElementById('timezone');
+    const swotFolderPath = document.getElementById('swot-folder-path');
+    const schoolsJsonPath = document.getElementById('schools-json-path');
 
     const prSchoolName = document.getElementById('prSchoolName');
     const prSchoolDomain = document.getElementById('prSchoolDomain');
@@ -337,6 +339,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             baseRepository.value = settings.baseRepository ?? '';
             headOwner.value = settings.headOwner ?? '';
             timezone.value = settings.timezone ?? '';
+            swotFolderPath.value = settings.swotFolderPath ?? '';
+            schoolsJsonPath.value = settings.schoolsJsonPath ?? '';
         });
     }
 

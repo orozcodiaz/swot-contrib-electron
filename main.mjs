@@ -12,8 +12,6 @@ const { Octokit } = require('@octokit/rest');
 import AppStorage from 'electron-store';
 
 const SwotContributorStorage = new AppStorage({ name: 'swot-contributor-storage' });
-// Path: /Users/fred/Library/Application Support/swot-contrib-electron/swot-contributor-storage.json
-// console.log(SwotContributorStorage.path);
 
 // TODO: Move functions out of here, leave only IPC renderers
 

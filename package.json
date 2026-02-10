@@ -4,6 +4,7 @@
   "main": "main.mjs",
   "scripts": {
     "start": "electron .",
+    "start-no-sandbox": "electron . --no-sandbox",
     "package": "electron-packager ."
   },
   "author": "Fred Orozco Diaz",

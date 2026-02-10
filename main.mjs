@@ -59,6 +59,30 @@ ipcMain.handle('save-settings',  async (event, settings) => {
         };
     }
 
+    // Check if SWOT folder exists & readable
+    if (settings?.swotFolderPath?.trim()) {
+        const swotFolderPath = settings?.swotFolderPath;
+
+        if (!fs.existsSync(swotFolderPath)) {
+            return {
+                success: false,
+                message: `Error: SWOT folder does not exist: ${swotFolderPath}`
+            };
+        }
+    }
+
+    // Check if schools JSON file exists & readable
+    if (settings?.schoolsJsonPath?.trim()) {
+        const schoolsJsonPath = settings?.schoolsJsonPath;
+
+        if (!fs.existsSync(schoolsJsonPath)) {
+            return {
+                success: false,
+                message: `Error: schools JSON file does not exist: ${schoolsJsonPath}`
+            };
+        }
+    }
+
     SwotContributorStorage.set('settings', {
         gitHubToken: settings.gitHubToken,
         baseRepository: settings.baseRepository,

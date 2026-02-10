@@ -400,7 +400,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             gitHubToken: gitHubToken.value,
             baseRepository: baseRepository.value,
             headOwner: headOwner.value,
-            timezone: timezone.value
+            timezone: timezone.value,
+            swotFolderPath: swotFolderPath.value,
+            schoolsJsonPath: schoolsJsonPath.value
         }).then(result => {
             hideLoader();
 

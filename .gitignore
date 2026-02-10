@@ -44,9 +44,9 @@ Thumbs.db
 
 # Miscellaneous
 coverage/
+tmp/
 *.tgz
 *.gz
-*.zip
 *.tar
 
 # TypeScript

@@ -295,6 +295,8 @@ async function SwotFolderSelector(event) {
 ipcMain.on('contribute-school', async (event, data) => {
     // TODO: Fill with event.sender.send('add-to-log', 'LOG MESSAGE (command output)');
     await ExecCommand(swotFolderPath, 'git checkout master');
+    await ExecCommand(swotFolderPath, 'git fetch upstream');
+    await ExecCommand(swotFolderPath, 'git reset --hard upstream/master');
     newBranchForSchool = `add-${data.schoolDomain}`;
     await ExecCommand(swotFolderPath, `git checkout -b ${newBranchForSchool}`);
 

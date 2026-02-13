@@ -144,6 +144,39 @@ ipcMain.handle('pull-settings',  () => {
     return SwotContributorStorage.get('settings');
 });
 
+ipcMain.handle('show-export-settings-dialog', async () => {
+    const settings = SwotContributorStorage.get('settings') || {};
+    const { canceled, filePath } = await dialog.showSaveDialog({
+        title: 'Export settings',
+        defaultPath: 'swot-contributor-settings.json',
+        filters: [{ name: 'JSON', extensions: ['json'] }]
+    });
+    if (canceled || !filePath) return { canceled: true };
+    try {
+        fs.writeFileSync(filePath, JSON.stringify(settings, null, 2), 'utf8');
+        return { canceled: false, path: filePath };
+    } catch (err) {
+        return { canceled: false, error: err.message };
+    }
+});
+
+ipcMain.handle('show-import-settings-dialog', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog({
+        title: 'Import settings',
+        properties: ['openFile'],
+        filters: [{ name: 'JSON', extensions: ['json'] }]
+    });
+    if (canceled || !filePaths?.length) return { canceled: true };
+    const filePath = filePaths[0];
+    try {
+        const raw = fs.readFileSync(filePath, 'utf8');
+        const settings = JSON.parse(raw);
+        return { canceled: false, settings };
+    } catch (err) {
+        return { canceled: false, error: err.message };
+    }
+});
+
 ipcMain.handle('check-github-token', async (event, token) => {
     const response = await fetch('https://api.github.com/user', {
         headers: { 'Authorization': `token ${token}` }

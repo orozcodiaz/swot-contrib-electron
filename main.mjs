@@ -178,13 +178,26 @@ ipcMain.on('minimize-window', async () => {
     MinimizeWindow();
 });
 
+function clearSetting(settingName) {
+    const settings = SwotContributorStorage.get('settings') || {};
+    delete settings[settingName];
+    SwotContributorStorage.set('settings', settings);
+}
+
 ipcMain.on('select-swot-folder', async (event) => {
     const settings = SwotContributorStorage.get('settings');
 
     // Check if SWOT folder is already selected/saved before
     if (settings?.swotFolderPath?.trim()) {
         swotFolderPath = settings.swotFolderPath;
-        return await SwotFolderSelector(event);
+        const swotFolderSelectionResult = await SwotFolderSelector(event);
+
+        if (swotFolderSelectionResult === false) {
+            clearSetting('swotFolderPath');
+            swotFolderPath = null;
+        } else {
+            return;
+        }
     }
 
     const result = await dialog.showOpenDialog({
@@ -203,7 +216,14 @@ ipcMain.on('select-swot-folder', async (event) => {
 async function SwotFolderSelector(event) {
     // Verify if this is correct SWOT folder
     event.sender.send('add-to-log', `Checking folder ${swotFolderPath}`);
-    const gitConfigFile = parseSync(`${swotFolderPath}/.git/config`);
+
+    // Check if file exists
+    const configFilePath = `${swotFolderPath}/.git/config`;
+    if (fs.existsSync(configFilePath) === false) {
+        return false;
+    }
+
+    const gitConfigFile = parseSync(configFilePath);
 
     if (Object.keys(gitConfigFile).length === 0) {
         const errorMessage = `Error. There is not .git folder in ${swotFolderPath}`;
@@ -302,8 +322,14 @@ ipcMain.on('select-schools-json', async (event) => {
     // Check if JSON schools path is already selected/saved before
     if (settings?.schoolsJsonPath?.trim()) {
         jsonSchoolsFile = settings.schoolsJsonPath;
-        event.sender.send('schools-json-selected', settings.schoolsJsonPath);
-        return PropagateUnmentionedSchools();
+
+        if (fs.existsSync(jsonSchoolsFile) === false) {
+            clearSetting('schoolsJsonPath');
+            jsonSchoolsFile = null;
+        } else {
+            event.sender.send('schools-json-selected', settings.schoolsJsonPath);
+            return PropagateUnmentionedSchools();
+        }
     }
 
     const result = await dialog.showOpenDialog({

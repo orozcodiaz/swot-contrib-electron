@@ -1,13 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const aboutContainer = document.getElementById('about-container');
-    const githubLink = document.getElementById('about-github-link');
+    const aboutLink = document.getElementById('about-link');
 
     document.getElementById('about-button').addEventListener('click', openAboutModal);
     document.getElementById('close-about-modal').addEventListener('click', hideAboutModal);
 
-    githubLink.addEventListener('click', (e) => {
+    aboutLink.addEventListener('click', (e) => {
         e.preventDefault();
-        api.openExternal(githubLink.dataset.url);
+        api.openExternal(aboutLink.dataset.url);
     });
 
     function openAboutModal() {
